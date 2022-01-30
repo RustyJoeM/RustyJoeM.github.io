@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+
+<script type="text/javascript">
+    function round_volume(diam_top_cm, diam_bottom_cm, height_cm) {
+        r1 = diam_top_cm / 2;
+        r2 = diam_bottom_cm / 2;
+        volume_cms = Math.PI / 3 * height_cm * (r1 * r1 + r1 * r2 + r2 * r2);
+        return (volume_cms / 1000).toFixed(2);
+    }
+
+    function square_volume(top_cm, bottom_cm, height_cm) {
+        volume_cms = height_cm / 3 * (top_cm * top_cm + top_cm * bottom_cm + bottom_cm * bottom_cm);
+        return (volume_cms / 1000).toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tab');
+        if (tabs === undefined) return;
+
+        const CLASSES_TO_FLIP = ['is-active', 'has-text-weight-bold'];
+
+        tabs.forEach((tab) => {
+            // pre-hide all contents
+            const content = document.getElementById(`${tab.id}-content`);
+            content.classList.add('is-hidden');
+            // add listeners for tab switching
+            tab.addEventListener('click', (e) => {
+                const tabName = e.currentTarget.attributes[1].nodeValue;
+                // disable current
+                const currentTab = document.querySelector('.tab.is-active');
+                const currentContent = document.getElementById(`${currentTab.id}-content`);
+                currentTab.classList.remove(...CLASSES_TO_FLIP);
+                currentContent.classList.add('is-hidden');
+                // enable new one
+                const newTab = document.getElementById(tabName);
+                const newTabContent = document.getElementById(`${tabName}-content`);
+                newTab.classList.add(...CLASSES_TO_FLIP);
+                newTabContent.classList.remove('is-hidden');
+            });
+        });
+        // show up single active one on page load
+        const currentTab = document.querySelector('.tab.is-active');
+        const currentContent = document.getElementById(`${currentTab.id}-content`);
+        currentContent.classList.remove('is-hidden');
+    });
+</script>
+
+<body>
+    <section class="section columns is-centered is-multiline">
+        <label class="label is-large column is-full">&#127807; Flower pot volume calculator</label>
+
+        <p class="column is-full">Calculate approximate (rounded to two decimal digits) volume of a flower pot
+            with given dimensions. <br /> You can choose type of a pot by picking a tab below:</p>
+
+        <div class="column is-full tabs is-centered is-boxed is-fullwidth" id="tabs">
+            <ul>
+                <li class="tab is-active has-text-weight-bold" id="round-chamfer"><a>&#10686; - Round chamfered</a></li>
+                <li class="tab" id="round-straight"><a>&#128318; - Round straight</a></li>
+                <li class="tab" id="square-chamfer"><a>&#10696; - Square chamfered</a></li>
+                <li class="tab" id="square-straight"><a>&#10720; - Square straight</a></li>
+            </ul>
+        </div>
+
+        <div class="column is-centered is-one-third" id="round-chamfer-content">
+            <p class="block">Typical round flower pot, wider on the top, narrower at ground level.</p>
+            <form>
+                <div class="field">
+                    <label class="label">Top diameter [cm]</label>
+                    <input class="input is-rounded" type="number" id="top" value="20">
+                </div>
+                <div class="field">
+                    <label class="label">Bottom diameter [cm]</label>
+                    <input class="input is-rounded" type="number" id="base" value="16">
+                </div>
+                <div class="field">
+                    <label class="label">Height [cm]</label>
+                    <input class="input is-rounded" type="number" id="height" value="16">
+                </div>
+
+                <div class="field has-text-centered">
+                    <button class="button is-rounded has-background-grey-lighter" type="button" class="button" id="run"
+                        onclick="display.value = round_volume(top.value, base.value, height.value)">
+                        Recalculate
+                    </button>
+                </div>
+
+                <div class="block">
+                    <label class="label">Calculated volume [L]</label>
+                    <input class="input is-rounded" type="text" id="display" disabled>
+                </div>
+            </form>
+        </div>
+
+        <div class="column is-centered is-one-third" id="round-straight-content">
+            <p class="block">Round flower pot with constant/uniform diameter all across its height.</p>
+            <form>
+                <div class="field">
+                    <label class="label">Diameter [cm]</label>
+                    <input class="input is-rounded" type="number" id="top" value="20">
+                </div>
+                <div class="field">
+                    <label class="label">Height [cm]</label>
+                    <input class="input is-rounded" type="number" id="height" value="16">
+                </div>
+
+                <div class="field has-text-centered">
+                    <button class="button is-rounded has-background-grey-lighter" type="button" class="button"
+                        name="run" id="run" onclick="display.value = round_volume(top.value, top.value, height.value)">
+                        Recalculate
+                    </button>
+                </div>
+
+                <div class="block">
+                    <label class="label">Calculated volume [L]</label>
+                    <input class="input is-rounded" type="text" name="display" id="display" disabled>
+                </div>
+            </form>
+        </div>
+
+        <div class="column is-centered is-one-third" id="square-chamfer-content">
+            <p class="block">Square flower pot with wider size at the top, narrowing at the ground level.</p>
+            <form>
+                <div class="field">
+                    <label class="label">Top square size [cm]</label>
+                    <input class="input is-rounded" type="number" id="top" value="20">
+                </div>
+                <div class="field">
+                    <label class="label">Bottom square size [cm]</label>
+                    <input class="input is-rounded" type="number" id="base" value="16">
+                </div>
+                <div class="field">
+                    <label class="label">Height [cm]</label>
+                    <input class="input is-rounded" type="number" id="height" value="16">
+                </div>
+
+                <div class="field has-text-centered">
+                    <button class="button is-rounded has-background-grey-lighter" type="button" class="button"
+                        name="run" id="run"
+                        onclick="display.value = square_volume(top.value, base.value, height.value)">
+                        Recalculate
+                    </button>
+                </div>
+
+                <div class="block">
+                    <label class="label">Calculated volume [L]</label>
+                    <input class="input is-rounded" type="text" name="display" id="display" disabled>
+                </div>
+            </form>
+        </div>
+
+        <div class="column is-centered is-one-third" id="square-straight-content">
+            <p class="block">Square flower pot with constant/uniform width all across its height.</p>
+            <form>
+                <div class="field">
+                    <label class="label">Square size [cm]</label>
+                    <input class="input is-rounded" type="number" id="top" value="20">
+                </div>
+                <div class="field">
+                    <label class="label">Height [cm]</label>
+                    <input class="input is-rounded" type="number" id="height" value="16">
+                </div>
+
+                <div class="field has-text-centered">
+                    <button class="button is-rounded has-background-grey-lighter" type="button" class="button"
+                        name="run" id="run" onclick="display.value = square_volume(top.value, top.value, height.value)">
+                        Recalculate
+                    </button>
+                </div>
+
+                <div class="block">
+                    <label class="label">Calculated volume [L]</label>
+                    <input class="input is-rounded" type="text" name="display" id="display" disabled>
+                </div>
+            </form>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <a href="https://bulma.io">
+                <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
+            </a>
+        </div>
+    </footer>
+</body>
+
+</html>
